@@ -4,14 +4,52 @@
   become: yes # i.e. become sudo
 
   tasks:
-    - name: apt-get update if old 
+    - name: apt-get update
       apt: 
         update_cache: yes
-        cache_valid_time: 3600 # seconds
+        cache_valid_time: 3600 # only check if 3600s seconds have passed since last check
+
     - name: Upgrade OS
       apt:
         upgrade: dist
+
     - name: Update packages
       apt:
         name: "*"
         state: latest
+
+    - name: Install Docker Dependencies
+      apt: 
+        pkg:
+          - ca-certificates
+          - curl
+          - gnupg
+          - lsb-release
+
+    - name: Add Docker GPG Key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    # needed to determine which docker repo to use
+    - name: Get Ubuntu Release
+      command: "lsb_release -cs"
+      register: command_output
+      changed_when: false
+
+    - name: Add Ubuntu Release to variable
+      set_fact: 
+        ubuntu_release={{ command_output.stdout }}
+
+    - name: Add Docker Repo
+      apt_repository:
+        repo: "deb https://download.docker.com/linux/ubuntu {{ ubuntu_release }} stable"
+        state: present
+        update_cache: yes
+
+    - name: Add Docker
+      apt:
+        pkg:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
