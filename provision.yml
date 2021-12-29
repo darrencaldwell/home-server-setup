@@ -1,0 +1,17 @@
+---
+
+- hosts: all # all hosts, in this case just the server
+  become: yes # i.e. become sudo
+
+  tasks:
+    - name: apt-get update if old 
+      apt: 
+        update_cache: yes
+        cache_valid_time: 3600 # seconds
+    - name: Upgrade OS
+      apt:
+        upgrade: dist
+    - name: Update packages
+      apt:
+        name: "*"
+        state: latest
