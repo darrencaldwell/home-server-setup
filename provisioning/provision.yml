@@ -1,12 +1,20 @@
 ---
 
 - hosts: all # all hosts, in this case just the server
+  vars_files: ../vars.yml
   become: yes # i.e. become sudo
 
   tasks:
     - include_tasks: update_system.yml
     - include_tasks: install_docker.yml
     - include_tasks: create_docker_network.yml
+
+    - name: Create services group
+      group:
+        name: "{{ services_name }}"
+        state: present
+        gid: "{{ services_gid }}"
+
       #    - include_tasks: swag.yml
     - include_tasks: nginx.yml
     - include_tasks: pihole.yml

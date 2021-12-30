@@ -1,0 +1,13 @@
+---
+timezone: Europe/London
+
+# users
+nginx_uid: 1500
+pihole_uid: 1501
+
+# groups
+services_gid: 1500
+services_name: services
+
+# passwords
+pihole_pass: admin

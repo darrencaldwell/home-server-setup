@@ -2,14 +2,28 @@
 # https://www.google.com/search?q=linux%20server%20nginx
 # https://github.com/linuxserver/docker-mods/tree/nginx-proxy-confs
 
+- name: Ensure nginx user exists
+  user:
+    name: nginx
+    uid: "{{ nginx_uid }}"
+    group: "{{ services_name }}"
+
+- name: Ensure nginx config folder exists (for first run)
+  file:
+    path: /config/nginx/nginx/proxy-confs/
+    state: directory
+    owner: "{{ nginx_uid }}"
+    group: "{{ services_name }}"
+
 - name: Load proxy-conf configs
   synchronize:
     src: ../files/nginx/
     dest: /config/nginx/nginx/proxy-confs/
     recursive: yes
     checksum: yes
-    archive: no
     times: no
+    group: no
+    owner: no
   register: proxy_conf_config # register so that on change it restarts the nginx container if running
 
 - name: Start nginx container
@@ -17,10 +31,12 @@
     image: lscr.io/linuxserver/nginx
     name: nginx
     env:
-      PUID=1000
-      PGID=1000
-      TZ=Europe/London
-      DOCKER_MODS=linuxserver/mods:nginx-proxy-confs
+      PUID: "{{ nginx_uid|quote }}"
+      PGID: "{{ services_gid|quote }}"
+      # PUID: "1000"
+      #PGID: "1000"
+      TZ: "{{ timezone }}"
+      DOCKER_MODS: "linuxserver/mods:nginx-proxy-confs"
     volumes:
       - /config/nginx:/config
     ports:
@@ -31,4 +47,8 @@
     networks:
       - name: home_server
 
-    # TODO: auto config the proxy.confs for the services we have
+# needed as pihole config modifies dns servers, causes erroring of download of proxy-conf mod files
+- name: Wait for port 80 to become open on the host, don't start checking for 10 seconds
+  wait_for:
+    port: 80
+    delay: 5

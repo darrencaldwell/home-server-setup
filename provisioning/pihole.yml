@@ -1,6 +1,12 @@
 ---
 # https://github.com/chriscrowe/docker-pihole-unbound
 
+- name: Ensure pihole user exists
+  user:
+    name: pihole
+    uid: "{{ pihole_uid }}"
+    group: "{{ services_name }}"
+
 - name: Disable Systemd-Resolved
   systemd:
     state: stopped
@@ -24,8 +30,10 @@
       - "67:67/udp"
         #- "80:80/tcp"
     env:
-      TZ: "Europe/London"
-      WEBPASSWORD: "admin"
+      PUID: "{{ pihole_uid|quote }}"
+      PGID: "{{ services_gid|quote }}"
+      TZ: "{{ timezone }}"
+      WEBPASSWORD: "{{ pihole_pass|quote }}"
       DNS: "127.0.0.1#5335" # Hardcoded to our Unbound server
       DNS2: "127.0.0.1#5335" # Hardcoded to our Unbound server
       DNSSEC: "true" # Enable DNSSEC
