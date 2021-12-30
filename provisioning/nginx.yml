@@ -18,12 +18,11 @@
 - name: Load proxy-conf configs
   synchronize:
     src: ../files/nginx/
-    dest: /config/nginx/nginx/proxy-confs/
+    dest: /config/nginx/nginx/
     recursive: yes
+    archive: no
     checksum: yes
     times: no
-    group: no
-    owner: no
   register: proxy_conf_config # register so that on change it restarts the nginx container if running
 
 - name: Start nginx container
