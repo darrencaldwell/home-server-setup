@@ -1,0 +1,43 @@
+---
+# https://github.com/chriscrowe/docker-pihole-unbound
+
+- name: Disable Systemd-Resolved
+  systemd:
+    state: stopped
+    enabled: no
+    name: systemd-resolved
+
+- name: Manually set static DNS servers to cloudflare
+  copy:
+    src: ../files/resolv.conf
+    dest: /etc/resolv.conf
+    owner: root
+    group: root
+
+- name: Start pihole container
+  docker_container:
+    name: pihole
+    image: cbcrowe/pihole-unbound:latest
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "67:67/udp"
+        #- "80:80/tcp"
+    env:
+      TZ: "Europe/London"
+      WEBPASSWORD: "admin"
+      DNS: "127.0.0.1#5335" # Hardcoded to our Unbound server
+      DNS2: "127.0.0.1#5335" # Hardcoded to our Unbound server
+      DNSSEC: "true" # Enable DNSSEC
+    # Volumes store your data between container upgrades
+    volumes:
+      - /etc_pihole-unbound:/etc/pihole:rw
+      - /etc_pihole_dnsmasq-unbound:/etc/dnsmasq.d:rw
+
+    # Recommended but not required (DHCP needs NET_ADMIN)
+    #   https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
+    capabilities:
+      - NET_ADMIN
+    restart_policy: unless-stopped
+    networks:
+      - name: home_server

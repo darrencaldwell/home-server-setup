@@ -1,5 +1,18 @@
 ---
-- name: nginx
+# https://www.google.com/search?q=linux%20server%20nginx
+# https://github.com/linuxserver/docker-mods/tree/nginx-proxy-confs
+
+- name: Load proxy-conf configs
+  synchronize:
+    src: ../files/nginx/
+    dest: /config/nginx/nginx/proxy-confs/
+    recursive: yes
+    checksum: yes
+    archive: no
+    times: no
+  register: proxy_conf_config # register so that on change it restarts the nginx container if running
+
+- name: Start nginx container
   docker_container: 
     image: lscr.io/linuxserver/nginx
     name: nginx
@@ -14,5 +27,8 @@
       - 80:80
       - 443:443
     restart_policy: unless-stopped
+    restart: "{{ proxy_conf_config.changed }}"
     networks:
       - name: home_server
+
+    # TODO: auto config the proxy.confs for the services we have
