@@ -12,4 +12,4 @@ Initial Goals:
 
 Development of Ansible playbooks + Docker files will be done using Vagrant + VirtualBox.
 This allows for rapid prototyping of fresh Ubuntu installs without having to reflash Raspberry Pi.
-Ideally, this will be deployed when stable and wil *just work*.
+Ideally, this will be deployed when stable and will *just work*.
