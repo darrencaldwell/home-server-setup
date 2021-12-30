@@ -9,6 +9,7 @@ Initial Goals:
 - [ ] Setup of Pihole and PiVPN (or straight wireguard impl?)
 - [ ] Ability for seamless interaction between localhost + remote connections
 - [ ] Backup scripts implemented in Ansible (photos, Foundry data, configs etc)
+- [ ] NextCloud self-hosting (my own gdrive?)
 
 Development of Ansible playbooks + Docker files will be done using Vagrant + VirtualBox.
 This allows for rapid prototyping of fresh Ubuntu installs without having to reflash Raspberry Pi.
