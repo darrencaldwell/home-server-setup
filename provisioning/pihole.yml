@@ -48,4 +48,4 @@
       - NET_ADMIN
     restart_policy: unless-stopped
     networks:
-      - name: home_server
+      - name: "{{ network }}"

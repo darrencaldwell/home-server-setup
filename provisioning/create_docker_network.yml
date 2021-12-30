@@ -1,4 +1,4 @@
 ---
 - name: Create Network
   docker_network:
-    name: home_server
+    name: "{{ network }}"

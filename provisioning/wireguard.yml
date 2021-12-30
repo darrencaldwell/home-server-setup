@@ -1,0 +1,36 @@
+---
+- name: Ensure wireguard user exists
+  user:
+    name: wireguard
+    uid: "{{ wireguard_uid }}"
+    group: "{{ services_name }}"
+
+- name: Start wireguard container
+  docker_container:
+    name: wireguard
+    image: linuxserver/wireguard
+    ports:
+      - "{{ wireguard_port|quote }}:{{ wireguard_port|quote }}/udp"
+    env:
+      PUID: "{{ wireguard_uid|quote }}"
+      PGID: "{{ services_gid|quote }}"
+      TZ: "{{ timezone }}"
+      SERVERURL: "{{ domain }}"
+      SERVERPORT: "{{ wireguard_port|quote }}"
+      PEERS: "{{ wireguard_peers }}"
+      INTERNAL_SUBNET: "{{ wireguard_subnet|quote }}"
+      PEERDNS: "{{ wireguard_dns }}"
+      ALLOWEDIPS: "{{ wireguard_allowed_ips }}"
+    # Volumes store your data between container upgrades
+    volumes:
+      - /config/wireguard:/config
+      - /lib/modules:/lib/modules
+    capabilities:
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      net.ipv4.conf.all.src_valid_mark=1
+    restart_policy: unless-stopped
+    networks:
+      - name: "{{ network }}"
+

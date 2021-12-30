@@ -1,13 +1,24 @@
 ---
 timezone: Europe/London
+domain: darrentech.net
+network: home-server # for docker network
 
 # users
 nginx_uid: 1500
 pihole_uid: 1501
+wireguard_uid: 1502
 
 # groups
 services_gid: 1500
 services_name: services
 
-# passwords
+# pihole config
 pihole_pass: admin
+
+# wireguard config
+wireguard_port: 51820
+wireguard_peers: surface_linux,s10,surface_win #csv of peer names
+wireguard_subnet: 10.13.13.0
+wireguard_dns: auto # change to use pihole later...?
+  #wireguard_dns: pihole  # change to use pihole later...?
+wireguard_allowed_ips: 0.0.0.0/0
