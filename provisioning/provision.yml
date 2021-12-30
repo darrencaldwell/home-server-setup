@@ -1,0 +1,11 @@
+---
+
+- hosts: all # all hosts, in this case just the server
+  become: yes # i.e. become sudo
+
+  tasks:
+    - include_tasks: update_system.yml
+    - include_tasks: install_docker.yml
+    - include_tasks: create_docker_network.yml
+      #    - include_tasks: swag.yml
+    - include_tasks: nginx.yml

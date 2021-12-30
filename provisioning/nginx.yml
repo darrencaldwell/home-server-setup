@@ -1,0 +1,18 @@
+---
+- name: nginx
+  docker_container: 
+    image: lscr.io/linuxserver/nginx
+    name: nginx
+    env:
+      PUID=1000
+      PGID=1000
+      TZ=Europe/London
+      DOCKER_MODS=linuxserver/mods:nginx-proxy-confs
+    volumes:
+      - /config/nginx:/config
+    ports:
+      - 80:80
+      - 443:443
+    restart_policy: unless-stopped
+    networks:
+      - name: home_server
