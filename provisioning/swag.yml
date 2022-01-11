@@ -1,4 +1,43 @@
 ---
+- name: Ensure swag user exists
+  user:
+    name: swag
+    uid: "{{ swag_uid }}"
+    group: "{{ services_name }}"
+
+- name: Ensure swag config folder exists (for first run)
+  file:
+    path: /config/swag/nginx/proxy-confs/
+    state: directory
+    owner: "{{ swag_uid }}"
+    group: "{{ services_name }}"
+
+- name: Load proxy-conf configs
+  synchronize:
+    src: ../files/nginx/
+    dest: /config/swag/nginx/
+    recursive: yes
+    archive: no
+    checksum: yes
+    times: no
+  register: proxy_conf_config # register so that on change it restarts the swag container if running
+
+- name: Ensure dns-conf exists
+  file:
+    path: /config/swag/dns-conf/
+    state: directory
+    owner: "{{ swag_uid }}"
+    group: "{{ services_name }}"
+  register: proxy_conf_config # register so that on change it restarts the swag container if running
+
+- name: supply cloudflare api file
+  template:
+    src: ../files/cloudflare.ini.j2
+    dest: /config/swag/dns-conf/cloudflare.ini
+    owner: "{{ swag_uid }}"
+    group: "{{ services_name }}"
+  register: proxy_conf_config # register so that on change it restarts the swag container if running
+
 - name: Start SWAG Container
   docker_container:
     image: ghcr.io/linuxserver/swag
@@ -6,24 +45,20 @@
     capabilities:
       - NET_ADMIN
     env:
-      PUID=1000
-      PGID=1000
-      TZ=Europe/London
-      URL=example.com
-      SUBDOMAINS=www,
-      VALIDATION=http
-      STAGING=true #optional
-        # - CERTPROVIDER= #optional
-        # - DNSPLUGIN=cloudflare #optional
-        # - DUCKDNSTOKEN=<token> #optional
-        # - EMAIL=<e-mail> #optional
-        # - ONLY_SUBDOMAINS=false #optional
-        # - EXTRA_DOMAINS=<extradomains> #optional
+      PUID: "{{ swag_uid|quote }}"
+      PGID: "{{ services_gid|quote }}"
+      TZ: "{{ timezone }}"
+      URL: "{{ domain }}"
+      SUBDOMAINS: "{{ swag_sub_domains }}"
+      VALIDATION: "{{ swag_validation }}"
+      DNSPLUGIN: "{{ swag_dnsplugin }}"
+      STAGING: "{{ swag_staging|quote }}"
     volumes:
-      - /swag_config:/config
+      - /config/swag:/config
     ports:
       - 443:443
       - 80:80 #optional
     restart_policy: unless-stopped
+    restart: "{{ proxy_conf_config.changed }}"
     networks:
-      - name: home_server
+      - name: "{{ network }}"

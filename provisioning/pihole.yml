@@ -1,5 +1,8 @@
 ---
 # https://github.com/chriscrowe/docker-pihole-unbound
+#
+# pihole dns issues with wireguard solution
+# https://discourse.pi-hole.net/t/solve-dns-resolution-in-other-containers-when-using-docker-pihole/31413
 
 - name: Ensure pihole user exists
   user:
@@ -25,8 +28,8 @@
     name: pihole
     image: cbcrowe/pihole-unbound:latest
     ports:
-      - "53:53/tcp"
-      - "53:53/udp"
+      - "192.168.24.124:53:53/tcp"
+      - "192.168.24.124:53:53/udp"
       - "67:67/udp"
         #- "80:80/tcp"
     env:

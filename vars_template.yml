@@ -1,0 +1,35 @@
+---
+timezone: Europe/London
+domain: 
+network: home-server # for docker network
+
+# users
+nginx_uid: 
+pihole_uid: 
+wireguard_uid: 
+swag_uid: 
+
+# groups
+services_gid: 
+services_name: 
+
+# pihole config
+pihole_pass: 
+
+# wireguard config
+wireguard_port: 
+wireguard_peers: 
+wireguard_subnet: 10.13.13.0
+#wireguard_dns: auto # change to use pihole later...?
+wireguard_dns: auto  # change to use pihole later...?
+wireguard_allowed_ips: 0.0.0.0/0
+
+# swag config
+swag_sub_domains: wildcard
+swag_validation: dns 
+swag_dnsplugin: cloudflare
+swag_staging: "true" # for testing, change to false for final deployment
+
+# cloudflare api details
+dns_cloudflare_email: 
+dns_cloudflare_api_key: 

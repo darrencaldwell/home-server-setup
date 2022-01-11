@@ -15,7 +15,7 @@
         state: present
         gid: "{{ services_gid }}"
 
-      #    - include_tasks: swag.yml
-    - include_tasks: nginx.yml
+    - include_tasks: swag.yml
+      #- include_tasks: nginx.yml
     - include_tasks: pihole.yml
     - include_tasks: wireguard.yml
