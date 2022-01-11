@@ -10,6 +10,7 @@
 - [ ] Ability for seamless interaction between localhost + remote connections
 - [ ] Backup scripts implemented in Ansible (photos, Foundry data, configs etc)
 - [ ] NextCloud self-hosting (my own gdrive?)
+- [ ] SSH Config, hardening, change port, remove root login etc
 
 Development of Ansible playbooks + Docker files will be done using Vagrant + VirtualBox.
 This allows for rapid prototyping of fresh Ubuntu installs without having to reflash Raspberry Pi.
@@ -37,3 +38,8 @@ Ensure that both Vagrant and VirtualBox are installed for your OS.
 - Execute `vagrant up` to download, startup and provision a new VM.
 - Visit `127.0.0.1:8080` in your browser to explore the available services (this port can be configured in the `Vagrantfile`
 - `vagrant ssh` allows for ssh'ing into the VM directly.
+
+### Deployment
+To run this on a baremetal server (i.e. raspberry pi) do the following:
+- Modify the `hosts.ini` file to point to the ip of your server.
+- Execute `ansible-playbook -i hosts.ini -u [USERNAME] provisioning/provision.yml`, where [USERNAME] is the user on the server
