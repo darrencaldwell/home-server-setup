@@ -6,7 +6,7 @@
 - [ ] Access to static webpage (i.e. blog, services dashboard)
 - [ ] Access to FoundryVTT (with auth)
 - [ ] Media services (Radarr, Deluge, Plex etc)
-- [ ] Setup of Pihole and PiVPN (or straight wireguard impl?)
+- [x] Setup of Pihole and PiVPN (or straight wireguard impl?)
 - [ ] Ability for seamless interaction between localhost + remote connections
 - [ ] Backup scripts implemented in Ansible (photos, Foundry data, configs etc)
 - [ ] NextCloud self-hosting (my own gdrive?)
