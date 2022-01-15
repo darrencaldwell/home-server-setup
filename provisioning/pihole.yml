@@ -10,35 +10,21 @@
     uid: "{{ pihole_uid }}"
     group: "{{ services_name }}"
 
-- name: Disable Systemd-Resolved
-  systemd:
-    state: stopped
-    enabled: no
-    name: systemd-resolved
-
-- name: Manually set static DNS servers to cloudflare
-  copy:
-    src: ../files/resolv.conf
-    dest: /etc/resolv.conf
-    owner: root
-    group: root
-
 - name: Start pihole container
   docker_container:
     name: pihole
-    image: cbcrowe/pihole-unbound:latest
+    image: pihole/pihole:latest
     ports:
-      - "192.168.24.124:53:53/tcp"
-      - "192.168.24.124:53:53/udp"
+      - "53:53/tcp"
+      - "53:53/udp"
       - "67:67/udp"
-        #- "80:80/tcp"
     env:
       PUID: "{{ pihole_uid|quote }}"
       PGID: "{{ services_gid|quote }}"
       TZ: "{{ timezone }}"
       WEBPASSWORD: "{{ pihole_pass|quote }}"
-      DNS: "127.0.0.1#5335" # Hardcoded to our Unbound server
-      DNS2: "127.0.0.1#5335" # Hardcoded to our Unbound server
+      DNS: "{{ unbound_ip }}" # Hardcoded to our Unbound server
+      DNS2: "{{ unbound_ip }}" # Hardcoded to our Unbound server
       DNSSEC: "true" # Enable DNSSEC
     # Volumes store your data between container upgrades
     volumes:
@@ -52,3 +38,5 @@
     restart_policy: unless-stopped
     networks:
       - name: "{{ network }}"
+        ipv4_address: "{{ pihole_ip }}"
+    dns_servers: "127.0.0.1,{{ unbound_ip }}"

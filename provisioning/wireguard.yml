@@ -19,7 +19,7 @@
       SERVERPORT: "{{ wireguard_port|quote }}"
       PEERS: "{{ wireguard_peers }}"
       INTERNAL_SUBNET: "{{ wireguard_subnet|quote }}"
-      PEERDNS: "{{ wireguard_dns }}"
+      PEERDNS: "{{ pihole_ip }}"
       ALLOWEDIPS: "{{ wireguard_allowed_ips }}"
     # Volumes store your data between container upgrades
     volumes:
@@ -33,4 +33,6 @@
     restart_policy: unless-stopped
     networks:
       - name: "{{ network }}"
+        ipv4_address: "{{ wireguard_ip }}"
+    dns_servers: "{{ pihole_ip }},{{ unbound_ip }}"
 

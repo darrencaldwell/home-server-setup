@@ -1,0 +1,33 @@
+---
+- name: Ensure unbound user exists
+  user:
+    name: unbound
+    uid: "{{ unbound_uid }}"
+    group: "{{ services_name }}"
+
+- name: Disable Systemd-Resolved
+  systemd:
+    state: stopped
+    enabled: no
+    name: systemd-resolved
+
+- name: Manually set static DNS servers to cloudflare
+  copy:
+    src: ../files/resolv.conf
+    dest: /etc/resolv.conf
+    owner: root
+    group: root
+
+- name: Start unbound container
+  docker_container:
+    name: unbound
+    image: pedantic/unbound
+    # Volumes store your data between container upgrades
+    #volumes:
+      #- /config/unbound:/opt/unbound/etc/unbound/
+    # Recommended but not required (DHCP needs NET_ADMIN)
+    #   https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
+    restart_policy: unless-stopped
+    networks:
+      - name: "{{ network }}"
+        ipv4_address: "{{ unbound_ip }}"

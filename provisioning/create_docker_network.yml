@@ -2,3 +2,5 @@
 - name: Create Network
   docker_network:
     name: "{{ network }}"
+    ipam_config:
+      - subnet: "{{ network_subnet }}"

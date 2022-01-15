@@ -1,13 +1,15 @@
 ---
 timezone: Europe/London
-domain: 
+domain: foo.net
 network: home-server # for docker network
+network_subnet: 
 
 # users
 nginx_uid: 
 pihole_uid: 
 wireguard_uid: 
 swag_uid: 
+unbound_uid: 
 
 # groups
 services_gid: 
@@ -15,21 +17,28 @@ services_name:
 
 # pihole config
 pihole_pass: 
+pihole_dns_serverrs: 
+pihole_ip: 
 
 # wireguard config
 wireguard_port: 
 wireguard_peers: 
-wireguard_subnet: 10.13.13.0
-#wireguard_dns: auto # change to use pihole later...?
-wireguard_dns: auto  # change to use pihole later...?
-wireguard_allowed_ips: 0.0.0.0/0
+wireguard_subnet: 
+wireguard_dns: 
+wireguard_dns_serverrs: 
+wireguard_allowed_ips: 
+wireguard_ip: 
 
 # swag config
-swag_sub_domains: wildcard
-swag_validation: dns 
-swag_dnsplugin: cloudflare
-swag_staging: "true" # for testing, change to false for final deployment
+swag_sub_domains: 
+swag_validation: 
+swag_dnsplugin: 
+swag_staging: 
+swag_ip: 
 
 # cloudflare api details
 dns_cloudflare_email: 
 dns_cloudflare_api_key: 
+
+# unbound config
+unbound_ip: 
