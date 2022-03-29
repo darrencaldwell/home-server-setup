@@ -1,0 +1,24 @@
+---
+- name: Ensure readarr user exists
+  user:
+    name: readarr
+    uid: "{{ readarr_uid }}"
+    group: "{{ services_name }}"
+
+- name: Start Readarr Container
+  docker_container:
+    image: ghcr.io/linuxserver/readarr:nightly
+    name: readarr
+    env:
+      PUID: "{{ readarr_uid|quote }}"
+      PGID: "{{ services_gid|quote }}"
+      TZ: "{{ timezone }}"
+    volumes:
+      - /config/readarr:/config
+      - /data/books:/books
+      - /data/torrents:/downloads
+    ports:
+      - 8787:8787
+    restart_policy: unless-stopped
+    networks:
+      - name: "{{ network }}"

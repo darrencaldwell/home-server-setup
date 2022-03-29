@@ -1,0 +1,25 @@
+---
+- name: Ensure deluge user exists
+  user:
+    name: deluge
+    uid: "{{ deluge_uid }}"
+    group: "{{ services_name }}"
+
+- name: Start Deluge Container
+  docker_container:
+    image: ghcr.io/linuxserver/deluge
+    name: deluge
+    env:
+      PUID: "{{ deluge_uid|quote }}"
+      PGID: "{{ services_gid|quote }}"
+      TZ: "{{ timezone }}"
+    volumes:
+      - /config/deluge:/config
+      - /data/torrents:/downloads
+    ports:
+      - 8112:8112
+      - 6881:6881
+      - 6881:6881/udp
+    restart_policy: unless-stopped
+    networks:
+      - name: "{{ network }}"

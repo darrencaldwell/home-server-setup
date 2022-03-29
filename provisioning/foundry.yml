@@ -1,0 +1,31 @@
+---
+- name: Ensure foundry user exists
+  user:
+    name: foundry
+    uid: "{{ foundry_uid }}"
+    group: "{{ services_name }}"
+
+- name: Start foundry container
+  docker_container:
+    name: foundryvtt
+    image: felddy/foundryvtt:release
+    ports:
+      - "{{ foundry_port|quote }}:{{ foundry_port|quote }}"
+    env:
+      PUID: "{{ foundry_uid|quote }}"
+      PGID: "{{ services_gid|quote }}"
+      TZ: "{{ timezone }}"
+      FOUNDRY_PASSWORD: "{{foundry_pass}}"
+      FOUNDRY_USERNAME: "{{foundry_user}}"
+      FOUNDRY_ADMIN_KEY: "{{foundry_admin_key}}"
+      FOUNDRY_HOSTNAME: "{{ domain }}"
+      FOUNDRY_PROXY_PORT: "443"
+      FOUNDRY_PROXY_SSL: "true"
+    # Volumes store your data between container upgrades
+    volumes:
+      - /data/foundry:/data
+    restart_policy: unless-stopped
+    networks:
+      - name: "{{ network }}"
+        ipv4_address: "{{ foundry_ip }}"
+    dns_servers: "{{ pihole_ip }},{{ unbound_ip }}"

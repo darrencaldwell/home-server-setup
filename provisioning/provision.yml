@@ -20,3 +20,8 @@
     - include_tasks: pihole.yml
     - include_tasks: swag.yml
     - include_tasks: wireguard.yml
+    - include_tasks: deluge.yml
+      #- include_tasks: jackett.yml
+    - include_tasks: prowlarr.yml
+    - include_tasks: readarr.yml
+    - include_tasks: foundry.yml

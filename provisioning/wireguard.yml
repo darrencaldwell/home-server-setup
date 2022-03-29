@@ -10,7 +10,7 @@
     name: wireguard
     image: linuxserver/wireguard
     ports:
-      - "{{ wireguard_port|quote }}:{{ wireguard_port|quote }}/udp"
+      - "{{ wireguard_port|quote }}:51820/udp"
     env:
       PUID: "{{ wireguard_uid|quote }}"
       PGID: "{{ services_gid|quote }}"

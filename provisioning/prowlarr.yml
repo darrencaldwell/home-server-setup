@@ -1,0 +1,22 @@
+---
+- name: Ensure prowlarr user exists
+  user:
+    name: prowlarr
+    uid: "{{ prowlarr_uid }}"
+    group: "{{ services_name }}"
+
+- name: Start Prowlarr Container
+  docker_container:
+    image: ghcr.io/linuxserver/prowlarr:develop
+    name: prowlarr
+    env:
+      PUID: "{{ prowlarr_uid|quote }}"
+      PGID: "{{ services_gid|quote }}"
+      TZ: "{{ timezone }}"
+    volumes:
+      - /config/prowlarr:/config
+    ports:
+      - 9696:9696
+    restart_policy: unless-stopped
+    networks:
+      - name: "{{ network }}"

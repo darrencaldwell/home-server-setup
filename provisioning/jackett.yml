@@ -1,0 +1,25 @@
+---
+- name: Ensure jackett user exists
+  user:
+    name: jackett
+    uid: "{{ jackett_uid }}"
+    group: "{{ services_name }}"
+
+- name: Start Jackett Container
+  docker_container:
+    image: ghcr.io/linuxserver/jackett
+    name: jackett
+    env:
+      PUID: "{{ jackett_uid|quote }}"
+      PGID: "{{ services_gid|quote }}"
+      TZ: "{{ timezone }}"
+      AUTO_UPDATE: "true" # recommended
+      #RUN_OPTS: 
+    volumes:
+      - /config/jackett:/config
+      - /data/torrents:/downloads
+    ports:
+      - 9117:9117
+    restart_policy: unless-stopped
+    networks:
+      - name: "{{ network }}"
